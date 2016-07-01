@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Scanner;
 
 import static sun.swing.MenuItemLayoutHelper.max;
 
@@ -37,6 +36,10 @@ class MainWindow extends JFrame {
 
     JTable table1 = new JTable();
     JTable table2 = new JTable();
+
+    JLabel label1 = new JLabel("Результат работы программы");
+    JLabel label2 = new JLabel("Поле для входных данных");
+    JLabel label3 = new JLabel("[цвет (b или w)][фигура(K - король, Q - ферзь, R - ладья, N - конь, B - слон, p - пешка)]");
 
     JButton button1 = new JButton("Сохранить в файл");
     JButton button2 = new JButton("Загрузить из файла");
@@ -92,10 +95,25 @@ class MainWindow extends JFrame {
         tables_config();
 
 
-        table1_panel.setLayout(new GridBagLayout());
+        table1_panel.setLayout(new BoxLayout(table1_panel, BoxLayout.Y_AXIS));
+
+        label1.setFont(new Font("Helvetica", Font.BOLD, 25));
+        label1.setPreferredSize(new Dimension(400,30));
+        label1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        table1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        table1_panel.add(label1);
         table1_panel.add(table1);
-        table2_panel.setLayout(new GridBagLayout());
+
+        label2.setFont(new Font("Helvetica", Font.BOLD, 25));
+        label2.setPreferredSize(new Dimension(320,30));
+        label3.setPreferredSize(new Dimension(320,30));
+        table2_panel.setLayout(new BoxLayout(table2_panel, BoxLayout.Y_AXIS));
+        label2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        table2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label3.setAlignmentX(Component.CENTER_ALIGNMENT);
+        table2_panel.add(label2);
         table2_panel.add(table2);
+        table2_panel.add(label3);
 
         buttons_panel.setLayout(new GridLayout(3, 1));
         buttons_panel.add(button1_panel);
@@ -127,21 +145,21 @@ class MainWindow extends JFrame {
         table1 = new JTable(ChessField1, Column_names);
         table2 = new JTable(ChessField2, Column_names);
 
-        table1.setFont(new Font("Helvetica", Font.PLAIN, 15));
-        table2.setFont(new Font("Helvetica", Font.PLAIN, 15));
+        table1.setFont(new Font("Helvetica", Font.PLAIN, 25));
+        table2.setFont(new Font("Helvetica", Font.PLAIN, 23));
 
-        table1.setRowHeight(40);
+        table1.setRowHeight(50);
         table2.setRowHeight(40);
 
-        table1.setMinimumSize(new Dimension(320,320));
+        table1.setMinimumSize(new Dimension(400,400));
         table1.setMaximumSize(new Dimension(400,400));
 
         table2.setMinimumSize(new Dimension(320,320));
-        table2.setMaximumSize(new Dimension(400,400));
+        table2.setMaximumSize(new Dimension(320,320));
 
         for (int i = 0; i < TableSize.Width; i++) {
-            table1.getColumnModel().getColumn(i).setCellRenderer(new Renderer());
-            table2.getColumnModel().getColumn(i).setCellRenderer(new Renderer());
+            table1.getColumnModel().getColumn(i).setCellRenderer(new Renderer_table1());
+            table2.getColumnModel().getColumn(i).setCellRenderer(new Renderer_table2());
         }
 
         for (int i = 0; i < TableSize.Hight; i++)
@@ -296,7 +314,7 @@ class MainWindow extends JFrame {
                 else
                     ChessField[row + i][column + i].BeatenByBlack++;
 
-                if (ChessField[row + i][column + i].UnitName != "")
+                if (Arr[row + i][column + i] == 1)
                     dir1 = false;
             }
         }
@@ -308,7 +326,7 @@ class MainWindow extends JFrame {
                 else
                     ChessField[row - i][column - i].BeatenByBlack++;
 
-                if (ChessField[row - i][column - i].UnitName != "")
+                if (Arr[row - i][column - i] == 1)
                     dir2 = false;
             }
         }
@@ -320,7 +338,7 @@ class MainWindow extends JFrame {
                 else
                     ChessField[row + i][column - i].BeatenByBlack++;
 
-                if (ChessField[row + i][column - i].UnitName != "")
+                if (Arr[row + i][column - i] == 1)
                     dir3 = false;
             }
         }
@@ -333,7 +351,7 @@ class MainWindow extends JFrame {
                 else
                     ChessField[row - i][column + i].BeatenByBlack++;
 
-                if (ChessField[row - i][column + i].UnitName != "")
+                if (Arr[row - i][column + i] == 1)
                     dir4 = false;
             }
         }
@@ -383,8 +401,16 @@ class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent actionEvent)
         {
             String fileName = "C:\\Users\\Рома\\IdeaProjects\\Chess (v 2.0)\\out\\production\\Chess (v 2.0)\\table.txt", text = "";
-
             File file = new File(fileName);
+            JFileChooser fileopen = new JFileChooser();
+
+
+            int ret = fileopen.showDialog(null, "Открыть файл");
+            if (ret == JFileChooser.APPROVE_OPTION) {
+                file = fileopen.getSelectedFile();
+                //fileName = file.getName();
+            }
+
 
             try {
                 if(!file.exists()){
@@ -419,6 +445,13 @@ class MainWindow extends JFrame {
         {
             String fileName = "C:\\Users\\Рома\\IdeaProjects\\Chess (v 2.0)\\out\\production\\Chess (v 2.0)\\table.txt", textLine = "";
             int x = 0, y = 0, c;
+            File file = new File(fileName);
+            JFileChooser fileopen = new JFileChooser();
+
+            int ret = fileopen.showDialog(null, "Открыть файл");
+            if (ret == JFileChooser.APPROVE_OPTION) {
+                file = fileopen.getSelectedFile();
+            }
 
             for (int i = 0; i < TableSize.Hight; i++)
                 for (int j = 0; j < TableSize.Width; j++)
@@ -431,10 +464,10 @@ class MainWindow extends JFrame {
 
             try(FileReader reader = new FileReader(fileName))
             {
-                char[] buffer = new char[(int)fileName.length()];
+                char[] buffer = new char[(int)file.length()];
                 reader.read(buffer);
 
-                for (int i = 0; i < (int)fileName.length() && buffer[i] != 0 ; i++)
+                for (int i = 0; i < (int)file.length() ; i++)
                 {
                     if (i % 7 == 0 || i % 7 == 1)
                     {
@@ -473,8 +506,12 @@ class MainWindow extends JFrame {
             for (int i = 0; i < TableSize.Hight; i++)
                 for (int j = 0; j < TableSize.Width; j++)
                 {
-                    if (!ChessField2[i][j].equals(""))
+                    if (!table1.getValueAt(i, j).toString().equals("") && !ChessField2[i][j].equals(""))
                         Arr[i][j] = 1;
+                    else {
+                        Arr[i][j] = 0;
+                        ChessField[i][j].UnitName = "";
+                    }
 
                     ChessField[i][j].BeatenByBlack = 0;
                     ChessField[i][j].BeatenByWhite = 0;
@@ -517,15 +554,16 @@ class MainWindow extends JFrame {
                     }
                     else if ((ChessField[i][j].BeatenByWhite - ChessField[i][j].BeatenByBlack) < 0) {
                         ChessField1[i][j] = ChessField[i][j].getUnitName() + (-ChessField[i][j].BeatenByWhite + ChessField[i][j].BeatenByBlack);
-                        table1.getColumnModel().getColumn(i).setCellRenderer(new Renderer());
+                        //table1.getColumnModel().getColumn(i).setCellRenderer(new Renderer_table1());
                     }
                     else if (ChessField[i][j].BeatenByWhite != 0) {
                         ChessField1[i][j] = ChessField[i][j].getUnitName() + "0";
                     }
                     else
                         ChessField1[i][j] = ChessField[i][j].getUnitName();
-        }
 
+            table1.repaint();
+        }
     }
 
     /**
