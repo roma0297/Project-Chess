@@ -19,6 +19,24 @@ public class Renderer_table2 extends DefaultTableCellRenderer
             cell.setBackground(color);
         }
 
+        if (MainWindow.ChessField2[row][column].length() > 0) {
+            String charToString = Character.toString(MainWindow.ChessField2[row][column].charAt(0));
+            charToString = charToString.toLowerCase();
+            if (MainWindow.ChessField2[row][column].charAt(1) != 'p' && MainWindow.ChessField2[row][column].charAt(1) != 'P') {
+                String charToString2 = Character.toString(MainWindow.ChessField2[row][column].charAt(1));
+                charToString2 = charToString2.toUpperCase();
+                MainWindow.ChessField2[row][column] = charToString + charToString2;
+                MainWindow.table2.repaint();
+            }
+            else
+            {
+                String charToString2 = Character.toString(MainWindow.ChessField2[row][column].charAt(1));
+                charToString2 = charToString2.toLowerCase();
+                MainWindow.ChessField2[row][column] = charToString + charToString2;
+                MainWindow.table2.repaint();
+            }
+        }
+
         return cell;
     }
 

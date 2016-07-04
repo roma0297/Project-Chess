@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +40,7 @@ class MainWindow extends JFrame {
     JPanel button2_panel = new JPanel();
     JPanel button3_panel = new JPanel();
 
-    JTable table2 = new JTable();
+    static JTable table2 = new JTable();
 
     JLabel label1 = new JLabel("Результат работы программы");
     JLabel label2 = new JLabel("Поле для входных данных");
@@ -482,6 +484,9 @@ class MainWindow extends JFrame {
             }
 
 
+            if (fileName == "")
+                return ;
+
             for (int i = 0; i < TableSize.Hight; i++)
                 for (int j = 0; j < TableSize.Width; j++)
                 {
@@ -550,6 +555,12 @@ class MainWindow extends JFrame {
                 for (int j = 0; j < TableSize.Width; j++)
                     if (Arr[i][j] == 1)
                     {
+                        if (ChessField2[i][j].length() != 2)
+                        {
+                            errMessage();
+                            System.exit(1);
+                        }
+
                         if (ChessField2[i][j].charAt(0) == 'w')
                             isWhite = true;
                         else if (ChessField2[i][j].charAt(0) == 'b')
@@ -624,13 +635,12 @@ class MainWindow extends JFrame {
 
     public JLabel MakeLabel(int i, int j)
     {
-        Color color = new Color(0x73AADE);
+        Color color = new Color(0x5C93DE);
         JLabel answerLabel = new JLabel();
         int result = MainWindow.ChessField[i][j].BeatenByWhite - MainWindow.ChessField[i][j].BeatenByBlack;
 
         if (Arr[i][j] == 1)
         {
-            //ImageIcon icon = new ImageIcon("\\src\\" + ChessField2[i][j] + ".png");
             ImageIcon icon = new ImageIcon(MainWindow.class.getResource(ChessField2[i][j] + ".png"));
             Image img = icon.getImage();
             Image bi = img.getScaledInstance(squares[i][j].getWidth() - 10, squares[i][j].getHeight() - 10, Image.SCALE_SMOOTH);
@@ -674,4 +684,10 @@ class MainWindow extends JFrame {
 
         return answerLabel;
     }
+
+    public void valid()
+    {
+        table2.repaint();
+    }
+
 }
